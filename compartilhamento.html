@@ -181,7 +181,7 @@
         document.getElementById('userNameText').textContent = firstName;
 
         // Texto personalizado para o WhatsApp com o primeiro nome
-        const shareText = `🚨 Oi, pessoal! Eu, ${encodeURIComponent(firstName)}, acabei de verificar meu cartão com o VERYCARD e é 100% gratuito e seguro! Proteja suas finanças contra clonagem ou vazamento. Acesse agora: https://verycard.com e faça o teste! 🛡️`;
+        const shareText = `🚨 Oi, pessoal! Eu, ${encodeURIComponent(firstName)}, acabei de verificar meu cartão com o VERYCARD e é 100% gratuito e seguro! Proteja suas finanças contra clonagem ou vazamento. Acesse agora: https://verycard.netlify.app e faça o teste! 🛡️`;
         const whatsappLink = document.getElementById('whatsappLink');
         whatsappLink.href = `https://api.whatsapp.com/send?text=${shareText}`;
 
