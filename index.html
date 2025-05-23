@@ -1,52 +1,13 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Verifique gratuitamente se seu cartão foi clonado ou vazado de forma segura">
-    <title>Verifique Seu Cartão</title>
+    <title>VERYCARD</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="icon" href="https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg?auto=compress&cs=tinysrgb&h=32" type="image/x-icon">
+    <link rel="icon" href=https://imgur.com/a/vrycard-LTwb73m" type="image/jpeg">
     <style>
         body {
             background: linear-gradient(135deg, #1E40AF 0%, #111827 100%);
@@ -62,12 +23,12 @@
         .form-input {
             background-color: #1f2937;
             border: 1px solid #4b5563;
-            color: #ffffff; /* Garante que o texto seja visível */
+            color: #ffffff;
             padding: 0.75rem 0.75rem 0.75rem 2.5rem;
             border-radius: 0.375rem;
             width: 100%;
             transition: all 0.3s ease;
-            font-size: 1rem; /* Tamanho de fonte legível */
+            font-size: 1rem;
         }
         .form-input:focus {
             outline: none;
@@ -126,8 +87,8 @@
     <header class="bg-gray-900 shadow-lg">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <img src="https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg?auto=compress&cs=tinysrgb&h=40" alt="Logo" class="h-10">
-                <span class="logo">VeriCard</span>
+                <img src="https://imgur.com/a/vrycard-LTwb73m.jpeg" alt="VERYCARD Logo" class="h-10">
+                <span class="logo">VERYCARD</span>
             </div>
             <div class="space-x-4">
                 <a href="#home" class="text-gray-300 hover:text-white">Home</a>
@@ -218,10 +179,50 @@
     </main>
 
     <footer id="contato" class="bg-gray-900 py-6 text-center">
-        <p class="text-gray-300">Entre em contato: <a href="mailto:suporte@vericard.com" class="text-blue-400 hover:underline">suporte@vericard.com</a></p>
-        <p class="text-gray-400 mt-2">© 2025 VeriCard. Todos os direitos reservados.</p>
+        <p class="text-gray-300">Entre em contato: <a href="mailto:suporte@verycard.com" class="text-blue-400 hover:underline">suporte@verycard.com</a></p>
+        <p class="text-gray-400 mt-2">© 2025 VERYCARD. Todos os direitos reservados.</p>
     </footer>
 
+    <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+    </script>
     <script>
         // Função para formatar o número do cartão (XXXX XXXX XXXX XXXX)
         function formatCardNumber(value) {
