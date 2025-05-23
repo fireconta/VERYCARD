@@ -1,0 +1,245 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compartilhe a verificação de segurança do VERYCARD no WhatsApp">
+    <title>VERYCARD - Compartilhar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="https://imgur.com/HXSvcEF.png" type="image/png">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1E40AF 0%, #111827 100%);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .btn-primary {
+            background: linear-gradient(to right, #25D366, #20BA56);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(to right, #20BA56, #25D366);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .progress-bar {
+            background-color: #1f2937;
+            border-radius: 9999px;
+            height: 1rem;
+            overflow: hidden;
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 1rem auto;
+        }
+        .progress-fill {
+            background: linear-gradient(to right, #7C3AED, #10B981);
+            height: 100%;
+            width: 0;
+            transition: width 0.5s ease-in-out;
+        }
+        .progress-text {
+            font-size: 0.875rem;
+            color: #9ca3af;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        .testimonial-card {
+            background-color: #1f2937;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+        }
+        .animate-fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .hamburger {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        @media (max-width: 640px) {
+            .hamburger {
+                display: block;
+            }
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: #1f2937;
+                padding: 1rem;
+                flex-direction: column;
+                align-items: center;
+            }
+            .nav-links.active {
+                display: flex;
+            }
+            .nav-item {
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <header class="bg-gray-900 shadow-lg">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+                <img src="https://imgur.com/HXSvcEF.png" alt="VERYCARD Logo" class="h-12">
+                <span class="logo">VERYCARD</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="md:hidden">
+                    <i class="fas fa-bars hamburger" onclick="toggleMenu()"></i>
+                </div>
+                <div class="nav-links" id="navLinks">
+                    <a href="index.html" class="nav-item text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                    <a href="index.html#como-funciona" class="nav-item text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Como Funciona</a>
+                    <a href="index.html#contato" class="nav-item text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Contato</a>
+                    <a href="index.html#verificar" class="nav-item text-white bg-purple-700 hover:bg-purple-600 px-4 py-2 rounded-md text-sm font-medium">Verificar Agora</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 text-center">
+        <section class="animate-fade-in">
+            <h2 class="text-4xl font-extrabold mb-4">Parabéns, <span id="userName">Usuário</span>!</h2>
+            <p class="text-lg text-gray-300 mb-6">Você está a um passo de finalizar sua verificação de segurança com o VERYCARD. Compartilhe o link abaixo em <strong>5 grupos</strong> e com <strong>5 contatos</strong> no WhatsApp para completar o processo e ajudar seus amigos a protegerem suas finanças!</p>
+            <div class="bg-gray-800 p-8 rounded-lg shadow-lg">
+                <p class="text-xl font-semibold mb-4">Texto para compartilhamento:</p>
+                <p class="text-gray-300 mb-6" id="shareText">"🚨 Oi, pessoal! Eu, <span id="userNameText">Usuário</span>, acabei de verificar meu cartão com o VERYCARD e é 100% gratuito e seguro! Proteja suas finanças contra clonagem ou vazamento. Acesse agora: https://verycard.com e faça o teste! 🛡️"</p>
+                <a id="whatsappLink" href="#" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg inline-flex items-center">
+                    <i class="fab fa-whatsapp mr-2"></i> Compartilhar no WhatsApp
+                </a>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p class="progress-text" id="progressText">Progresso: 0% (Compartilhe em 5 grupos e 5 contatos)</p>
+            </div>
+        </section>
+
+        <section class="mt-12">
+            <h3 class="text-2xl font-semibold mb-6">O que as pessoas estão dizendo</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="testimonial-card animate-fade-in">
+                    <p class="text-gray-300">"Fiz o teste com o VERYCARD e descobri que meu cartão está seguro! Super fácil e rápido. Recomendo!"</p>
+                    <p class="text-gray-400 mt-4 font-semibold">— Ana S., São Paulo</p>
+                </div>
+                <div class="testimonial-card animate-fade-in" style="animation-delay: 0.2s;">
+                    <p class="text-gray-300">"Ótima ferramenta! Compartilhei com meus amigos e todos adoraram a simplicidade. Obrigado, VERYCARD!"</p>
+                    <p class="text-gray-400 mt-4 font-semibold">— Carlos M., Rio de Janeiro</p>
+                </div>
+                <div class="testimonial-card animate-fade-in" style="animation-delay: 0.4s;">
+                    <p class="text-gray-300">"Finalmente uma forma confiável de verificar meu cartão sem pagar nada. Valeu, VERYCARD!"</p>
+                    <p class="text-gray-400 mt-4 font-semibold">— Mariana L., Belo Horizonte</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-900 py-6 text-center">
+        <p class="text-gray-300">Entre em contato: <a href="mailto:suporte@verycard.com" class="text-blue-400 hover:underline">suporte@verycard.com</a></p>
+        <p class="text-gray-400 mt-2">© 2025 VERYCARD. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Obter o nome do usuário da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const userName = urlParams.get('name') ? decodeURIComponent(urlParams.get('name')) : 'Usuário';
+        document.getElementById('userName').textContent = userName;
+        document.getElementById('userNameText').textContent = userName;
+
+        // Texto personalizado para o WhatsApp
+        const shareText = `🚨 Oi, pessoal! Eu, ${encodeURIComponent(userName)}, acabei de verificar meu cartão com o VERYCARD e é 100% gratuito e seguro! Proteja suas finanças contra clonagem ou vazamento. Acesse agora: https://verycard.com e faça o teste! 🛡️`;
+        const whatsappLink = document.getElementById('whatsappLink');
+        whatsappLink.href = `https://api.whatsapp.com/send?text=${shareText}`;
+
+        // Simulação de progresso
+        let progress = 0;
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+
+        whatsappLink.addEventListener('click', () => {
+            // Simula progresso (já que não podemos rastrear compartilhamentos reais)
+            if (progress < 100) {
+                progress += 10; // Incrementa 10% a cada clique (simulando 10 compartilhamentos)
+                progressFill.style.width = `${progress}%`;
+                progressText.textContent = `Progresso: ${progress}% (Compartilhe em 5 grupos e 5 contatos)`;
+                if (progress >= 100) {
+                    progressText.textContent = 'Progresso: 100% (Verificação concluída! Obrigado por compartilhar!)';
+                    progressText.style.color = '#10B981';
+                }
+            }
+        });
+    </script>
+</body>
+</html>
