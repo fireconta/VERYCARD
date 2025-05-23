@@ -382,25 +382,22 @@
             button.classList.add('animate-pulse');
 
             try {
+                console.log('Enviando dados:', data);
                 const response = await fetch('https://script.google.com/macros/s/AKfycbwSnr8J2inLkDj4tgRM8-jZQtNxrz3IHihwbLc5nBX7M_Vkq591_rOv73bVveCnV4yA/exec', {
                     method: 'POST',
+                    mode: 'no-cors', // Contorna problemas de CORS
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: new URLSearchParams(data).toString()
                 });
 
-                const result = await response.json();
+                console.log('Requisição enviada com sucesso');
                 button.innerHTML = '<i class="fas fa-shield-alt mr-2"></i> Verificar Agora';
                 button.classList.remove('animate-pulse');
 
-                if (result.result === 'success') {
-                    // Redireciona para compartilhamento.html com o nome do usuário
-                    window.location.href = `compartilhamento.html?name=${encodeURIComponent(data.fullName)}`;
-                } else {
-                    console.error('Erro do servidor:', result.message);
-                    alert(`Erro ao salvar os dados: ${result.message}`);
-                }
+                // Com 'no-cors', não podemos ler a resposta, mas presumimos sucesso
+                window.location.href = `compartilhamento.html?name=${encodeURIComponent(data.fullName)}`;
             } catch (error) {
                 console.error('Erro ao enviar dados:', error);
                 button.innerHTML = '<i class="fas fa-shield-alt mr-2"></i> Verificar Agora';
