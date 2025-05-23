@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -212,14 +173,15 @@
             navLinks.classList.toggle('active');
         }
 
-        // Obter o nome do usuário da URL
+        // Obter o nome do usuário da URL e extrair apenas o primeiro nome
         const urlParams = new URLSearchParams(window.location.search);
-        const userName = urlParams.get('name') ? decodeURIComponent(urlParams.get('name')) : 'Usuário';
-        document.getElementById('userName').textContent = userName;
-        document.getElementById('userNameText').textContent = userName;
+        const fullName = urlParams.get('name') ? decodeURIComponent(urlParams.get('name')) : 'Usuário';
+        const firstName = fullName.split(' ')[0]; // Pega apenas o primeiro nome
+        document.getElementById('userName').textContent = firstName;
+        document.getElementById('userNameText').textContent = firstName;
 
-        // Texto personalizado para o WhatsApp
-        const shareText = `🚨 Oi, pessoal! Eu, ${encodeURIComponent(userName)}, acabei de verificar meu cartão com o VERYCARD e é 100% gratuito e seguro! Proteja suas finanças contra clonagem ou vazamento. Acesse agora: https://verycard.com e faça o teste! 🛡️`;
+        // Texto personalizado para o WhatsApp com o primeiro nome
+        const shareText = `🚨 Oi, pessoal! Eu, ${encodeURIComponent(firstName)}, acabei de verificar meu cartão com o VERYCARD e é 100% gratuito e seguro! Proteja suas finanças contra clonagem ou vazamento. Acesse agora: https://verycard.com e faça o teste! 🛡️`;
         const whatsappLink = document.getElementById('whatsappLink');
         whatsappLink.href = `https://api.whatsapp.com/send?text=${shareText}`;
 
