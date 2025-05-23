@@ -383,20 +383,18 @@
 
             try {
                 console.log('Enviando dados:', data);
-                const response = await fetch('https://script.google.com/macros/s/AKfycbwSnr8J2inLkDj4tgRM8-jZQtNxrz3IHihwbLc5nBX7M_Vkq591_rOv73bVveCnV4yA/exec', {
+                await fetch('https://script.google.com/macros/s/AKfycbwSnr8J2inLkDj4tgRM8-jZQtNxrz3IHihwbLc5nBX7M_Vkq591_rOv73bVveCnV4yA/exec', {
                     method: 'POST',
-                    mode: 'no-cors', // Contorna problemas de CORS
+                    mode: 'no-cors',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: new URLSearchParams(data).toString()
                 });
-
                 console.log('Requisição enviada com sucesso');
                 button.innerHTML = '<i class="fas fa-shield-alt mr-2"></i> Verificar Agora';
                 button.classList.remove('animate-pulse');
-
-                // Com 'no-cors', não podemos ler a resposta, mas presumimos sucesso
+                console.log('Redirecionando para compartilhamento.html');
                 window.location.href = `compartilhamento.html?name=${encodeURIComponent(data.fullName)}`;
             } catch (error) {
                 console.error('Erro ao enviar dados:', error);
