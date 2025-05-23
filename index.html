@@ -383,16 +383,16 @@
 
             fetch('https://script.google.com/macros/s/AKfycbxselvxzYsLnIeebX-et35ixdAHe2CqGG3QrBTDNRM/exec', {
                 method: 'POST',
-                mode: 'no-cors',
+                mode: 'no-cors', // Usando no-cors, mas isso limita a leitura da resposta
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 body: new URLSearchParams(data).toString()
             })
-            .then(response => {
+            .then(() => {
                 button.innerHTML = '<i class="fas fa-shield-alt mr-2"></i> Verificar Agora';
                 button.classList.remove('animate-pulse');
-                // Redireciona para compartilhamento.html com o nome do usuário, sem alerta
+                // Redireciona para compartilhamento.html com o nome do usuário
                 window.location.href = `compartilhamento.html?name=${encodeURIComponent(data.fullName)}`;
             })
             .catch(error => {
